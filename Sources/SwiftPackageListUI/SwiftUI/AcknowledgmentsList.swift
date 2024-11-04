@@ -41,14 +41,17 @@ public struct AcknowledgmentsList<Provider: PackageProvider>: View {
     private let _packageProvider: Provider
     @State private var _packages: [Package] = []
     private let _showVersion: Bool
+    private let _excludeEmptyLicenses: Bool
     
     /// Creates a ``AcknowledgmentsList`` for a package provider.
     /// - Parameters:
     ///   - packageProvider: The package provider object used as the source of data.
     ///   - showVersion: A boolean value indicating whether the version of the package should be shown in the list.
-    public init(packageProvider: Provider = .json(), showVersion: Bool = false) {
+    ///   - excludeEmptyLicenses: A boolean value indicating whether packages without a license should be excluded from the list.
+    public init(packageProvider: Provider = .json(), showVersion: Bool = false, excludeEmptyLicenses: Bool = false) {
         self._packageProvider = packageProvider
         self._showVersion = showVersion
+        self._excludeEmptyLicenses = excludeEmptyLicenses
     }
     
     public var body: some View {
@@ -87,6 +90,9 @@ public struct AcknowledgmentsList<Provider: PackageProvider>: View {
     private func _loadPackages() {
         do {
             _packages = try _packageProvider.packages()
+            if _excludeEmptyLicenses {
+                _packages = _packages.filter { $0.hasLicense }
+            }
         } catch {
             os_log(
                 "Error: %@",
