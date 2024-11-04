@@ -57,7 +57,7 @@ public struct AcknowledgmentsList<Provider: PackageProvider>: View {
                 header: Text("acknowledgments.section-title", bundle: .module, comment: "Section title for the license list")
             ) {
                 ForEach(_packages, id: \.self) { package in
-                    NavigationLink(package.name + (_showVersion ? " (\(package.version ?? ""))" : "")) {
+                    NavigationLink(package.name + (_showVersion && package.version != nil && !package.version!.isEmpty ? " (\(package.version ?? ""))" : "")) {
                         _LicenseText(_package: package, _showVersion: _showVersion)
                     }
                 }

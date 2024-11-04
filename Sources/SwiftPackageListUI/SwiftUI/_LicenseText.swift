@@ -18,7 +18,7 @@ internal struct _LicenseText: View {
     init(_package: Package, _showVersion: Bool) {
         self._package = _package
         self._showVersion = _showVersion
-        if _showVersion, let version = _package.version {
+        if _showVersion, let version = _package.version, !version.isEmpty {
             _suffix = " (\(version))"
         } else {
             _suffix = ""
