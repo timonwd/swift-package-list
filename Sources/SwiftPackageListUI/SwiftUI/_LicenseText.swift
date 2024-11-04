@@ -12,6 +12,18 @@ import SwiftPackageList
 
 internal struct _LicenseText: View {
     internal let _package: Package
+    internal let _showVersion: Bool
+    private let _suffix: String
+    
+    init(_package: Package, _showVersion: Bool) {
+        self._package = _package
+        self._showVersion = _showVersion
+        if _showVersion, let version = _package.version {
+            _suffix = " (\(version))"
+        } else {
+            _suffix = ""
+        }
+    }
     
     internal var body: some View {
         ZStack {
@@ -32,10 +44,10 @@ internal struct _LicenseText: View {
 #endif
         }
 #if os(visionOS)
-        .navigationTitle(Text(_package.name))
+        .navigationTitle(Text(_package.name + _suffix))
         .navigationBarTitleDisplayMode(.inline)
 #else
-        .backport.navigationTitle(Text(_package.name))
+        .backport.navigationTitle(Text(_package.name + _suffix))
 #if os(iOS) || os(watchOS) || os(visionOS)
         .backport.navigationBarTitleDisplayMode(.inline)
 #endif

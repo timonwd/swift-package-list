@@ -40,12 +40,15 @@ import SwiftPackageList
 public struct AcknowledgmentsList<Provider: PackageProvider>: View {
     private let _packageProvider: Provider
     @State private var _packages: [Package] = []
+    private let _showVersion: Bool
     
     /// Creates a ``AcknowledgmentsList`` for a package provider.
     /// - Parameters:
     ///   - packageProvider: The package provider object used as the source of data.
-    public init(packageProvider: Provider = .json()) {
+    ///   - showVersion: A boolean value indicating whether the version of the package should be shown in the list.
+    public init(packageProvider: Provider = .json(), showVersion: Bool = false) {
         self._packageProvider = packageProvider
+        self._showVersion = showVersion
     }
     
     public var body: some View {
@@ -54,8 +57,8 @@ public struct AcknowledgmentsList<Provider: PackageProvider>: View {
                 header: Text("acknowledgments.section-title", bundle: .module, comment: "Section title for the license list")
             ) {
                 ForEach(_packages, id: \.self) { package in
-                    NavigationLink(package.name) {
-                        _LicenseText(_package: package)
+                    NavigationLink(package.name + (_showVersion ? " (\(package.version ?? ""))" : "")) {
+                        _LicenseText(_package: package, _showVersion: _showVersion)
                     }
                 }
             }
